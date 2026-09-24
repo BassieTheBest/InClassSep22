@@ -16,8 +16,7 @@ public class Driver {
 //		Dog.showDogs();
 		
 		NextGame game = new NextGame();
-		game.userInput();
-		game.randomNumber();
+		game.actuallyPlaying();
 		
 	}
 

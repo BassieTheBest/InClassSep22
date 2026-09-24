@@ -1,22 +1,26 @@
 import java.util.Random;
 import java.util.Scanner;
+import java.io.File;
 
 public class NextGame {
-	Scanner scanner = new Scanner(System.in);
-	Random random = new Random();
-	int[] guessArray = new int[5];
-	int[] rand = {1,2,3,4,5};
+	private Scanner scanner = new Scanner(System.in);
+	private Random random = new Random();
+	private int[] guessArray = new int[5];
+	private int[] rand = {1,2,3,4,5};
+	private Boolean win = false;
+	private Boolean surrender = false;
+	private int turns = 1;
+	File highScore = new File("HighScore.txt");
 	
 	public void userInput() {
 		int index1;
+		System.out.printf("== Turn %d == Number Sequence: ", turns);
 		for (index1 = 0; index1<5; index1++) {
 			guessArray[index1] = scanner.nextInt();
+			if (guessArray[index1] == 0) {
+				surrender = true;
+			}
 		}
-		
-		for (int index : guessArray) {
-			System.out.print(index + " ");
-		}
-		System.out.println();
 	}
 	
 	public void randomNumber() {
@@ -32,10 +36,57 @@ public class NextGame {
 			
 			
 		}
-		for (int index : rand) {
-			System.out.print(index + " ");
+	}
+	
+	public void compareThings() {
+		int correctCount = 0;
+		int index;
+		
+		for(index = 0; index < 5; index++) {
+			if (rand[index] == guessArray[index]) {
+				correctCount++;
+			}
+			if (correctCount == 5) {
+				win = true;
+			}
+		}
+		System.out.println("You got " + correctCount + " guesses Right");
+	}
+	
+	public void repeat() {
+		turns = 2;
+		while (!surrender && !win) {
+			userInput();
+			compareThings();
+			turns++;
 		}
 	}
 	
-	public void 
+	public void titleCard() {
+		System.out.println("Game: Who's Next");
+		System.out.printf("Objective: Identify the Sequence of 5 numbers "
+				+ "between 1 and 5 using the fewest turns. If you wish \nto quit "
+				+ "guessing and give up, enter a ZERO for one of your guesses"
+				+ " and the game will display the \nsolution and quit.");
+		System.out.println("Good Luck!!!");
+		
+		
+	}
+	
+	public void GameOver() {
+		System.out.printf("\nGame Number Sequences \n---------------------\n| %d | %d | %d | %d | %d |\n---------------------", rand[0], rand[1], rand[2], rand[3], rand[4]);
+	}
+	
+	public void highSchore() {
+		
+	}
+	
+	public void actuallyPlaying() {
+		titleCard();
+		userInput();
+		randomNumber();
+		compareThings();
+		repeat();
+		GameOver();
+	}
 }
