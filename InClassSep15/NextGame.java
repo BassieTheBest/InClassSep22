@@ -1,6 +1,9 @@
 import java.util.Random;
 import java.util.Scanner;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class NextGame {
 	private Scanner scanner = new Scanner(System.in);
@@ -10,7 +13,9 @@ public class NextGame {
 	private Boolean win = false;
 	private Boolean surrender = false;
 	private int turns = 1;
-	File highScore = new File("HighScore.txt");
+	private String wordTurn = "";
+	private File highScore = new File("HighScore.txt");
+	private String user;
 	
 	public void userInput() {
 		int index1;
@@ -54,11 +59,12 @@ public class NextGame {
 	}
 	
 	public void repeat() {
-		turns = 2;
+		
 		while (!surrender && !win) {
+			turns++;
 			userInput();
 			compareThings();
-			turns++;
+			
 		}
 	}
 	
@@ -74,19 +80,50 @@ public class NextGame {
 	}
 	
 	public void GameOver() {
-		System.out.printf("\nGame Number Sequences \n---------------------\n| %d | %d | %d | %d | %d |\n---------------------", rand[0], rand[1], rand[2], rand[3], rand[4]);
+		System.out.printf("\nGame Number Sequences \n---------------------\n| %d | %d | %d | %d | %d |\n---------------------\n", rand[0], rand[1], rand[2], rand[3], rand[4]);
 	}
 	
-	public void highSchore() {
+	public void readHighScore() {
+		try {
+			Scanner HSScan = new Scanner(highScore);
+			while (HSScan.hasNextLine()) {
+				String line = HSScan.nextLine();
+	            System.out.println(line);
+			}
+			HSScan.close();
+		}
+		catch (FileNotFoundException nf) {
+			System.out.print("Loser");
+		}
+	}
+	
+	public void setHighScore() {
+		try {
+			FileWriter newHS = new FileWriter(highScore, true);
+			user = scanner.nextLine();
+			newHS.write(wordTurn);
+			newHS.write(" - ");
+			newHS.write(user + "\n");
+			
+			newHS.close();
+		}
+		catch (IOException MU) {
+			System.out.println("Messed Up");
+		}
 		
 	}
 	
 	public void actuallyPlaying() {
 		titleCard();
-		userInput();
 		randomNumber();
+		userInput();
 		compareThings();
 		repeat();
 		GameOver();
+		if (win = true) {
+			setHighScore();
+			readHighScore();
+		}
+		turns = 1;
 	}
 }
